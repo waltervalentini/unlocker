@@ -72,10 +72,6 @@ def bytetohex(data):
         return "".join("{:02X} ".format(ord(c)) for c in data)
 
 
-def joinpath(folder, filename):
-    return os.path.join(folder, filename)
-
-
 def printkey(i, offset, smc_key, smc_data):
     print(str(i + 1).zfill(3)
           + ' ' + hex(offset)
@@ -322,7 +318,7 @@ def patchbase(name):
         f.seek(offset + 32)
         flag = ord(f.read(1))
         flag = set_bit(flag, 0)
-#        flag = chr(flag)
+        # flag = chr(flag)
         f.seek(offset + 32)
         f.write(bytes([flag]))
         print('GOS Patched flag @: ' + hex(offset))
@@ -363,25 +359,26 @@ def main():
 
     # Setup default paths
     if osname == 'linux':
-        vmx_path = '/usr/lib/vmware/bin/'
-        vmx = joinpath(vmx_path, 'vmware-vmx')
-        vmx_debug = joinpath(vmx_path, 'vmware-vmx-debug')
-        vmx_stats = joinpath(vmx_path, 'vmware-vmx-stats')
-        if os.path.isfile('/usr/lib/vmware/lib/libvmwarebase.so/libvmwarebase.so'):
+        base_path = '/usr/lib/vmware'
+        vmx_path = base_path + '/bin/'
+        vmx = os.path.join(vmx_path, 'vmware-vmx')
+        vmx_debug = os.path.join(vmx_path, 'vmware-vmx-debug')
+        vmx_stats = os.path.join(vmx_path, 'vmware-vmx-stats')
+        if os.path.isfile( base_path + '/lib/libvmwarebase.so/libvmwarebase.so'):
             vmx_so = True
-            vmwarebase = '/usr/lib/vmware/lib/libvmwarebase.so/libvmwarebase.so'
+            vmwarebase = base_path + '/lib/libvmwarebase.so/libvmwarebase.so'
         else:
-            vmwarebase = '/usr/lib/vmware/lib/libvmwarebase.so.0/libvmwarebase.so.0'
+            vmwarebase = base_path + '/lib/libvmwarebase.so.0/libvmwarebase.so.0'
 
     elif osname == 'windows':
         reg = ConnectRegistry(None, HKEY_LOCAL_MACHINE)
         key = OpenKey(reg, r'SOFTWARE\Wow6432Node\VMware, Inc.\VMware Workstation')
         vmwarebase_path = QueryValueEx(key, 'InstallPath')[0]
         vmx_path = QueryValueEx(key, 'InstallPath64')[0]
-        vmx = joinpath(vmx_path, 'vmware-vmx.exe')
-        vmx_debug = joinpath(vmx_path, 'vmware-vmx-debug.exe')
-        vmx_stats = joinpath(vmx_path, 'vmware-vmx-stats.exe')
-        vmwarebase = joinpath(vmwarebase_path, 'vmwarebase.dll')
+        vmx = os.path.join(vmx_path, 'vmware-vmx.exe')
+        vmx_debug = os.path.join(vmx_path, 'vmware-vmx-debug.exe')
+        vmx_stats = os.path.join(vmx_path, 'vmware-vmx-stats.exe')
+        vmwarebase = os.path.join(vmwarebase_path, 'vmwarebase.dll')
 
     else:
         print('Unknown Operating System: ' + osname)

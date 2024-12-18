@@ -15,15 +15,18 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 echo Creating backup folder...
-rm -rf ./backup
-mkdir -p "./backup"
-cp -v /usr/lib/vmware/bin/vmware-vmx ./backup/
-cp -v /usr/lib/vmware/bin/vmware-vmx-debug ./backup/
-cp -v /usr/lib/vmware/bin/vmware-vmx-stats ./backup/
-if [ -d /usr/lib/vmware/lib/libvmwarebase.so.0/ ]; then
-    cp -v /usr/lib/vmware/lib/libvmwarebase.so.0/libvmwarebase.so.0 ./backup/
-elif [ -d /usr/lib/vmware/lib/libvmwarebase.so/ ]; then
-    cp -v /usr/lib/vmware/lib/libvmwarebase.so/libvmwarebase.so ./backup/
+base_dir=/usr/lib/vmware
+backup_dir=./backup
+rm -rf "$backup_dir"
+mkdir -p "$backup_dir"
+cp -v \
+    "$base_dir/bin/vmware-vmx" \
+    "$base_dir/bin/vmware-vmx-debug" \
+    "$base_dir/bin/vmware-vmx-stats" "$backup_dir"
+if [ -d "$base_dir/lib/libvmwarebase.so.0/" ]; then
+    cp -v "$base_dir/lib/libvmwarebase.so.0/libvmwarebase.so.0" "$backup_dir"
+elif [ -d "$base_dir/lib/libvmwarebase.so/" ]; then
+    cp -v "$base_dir/lib/libvmwarebase.so/libvmwarebase.so" "$backup_dir"
 fi
 
 echo Patching...

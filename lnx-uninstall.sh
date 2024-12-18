@@ -15,18 +15,19 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 echo Restoring files...
-cp -v ./backup/vmware-vmx  /usr/lib/vmware/bin/
-cp -v ./backup/vmware-vmx-debug /usr/lib/vmware/bin/
-cp -v ./backup/vmware-vmx-stats /usr/lib/vmware/bin/
-if [ -d /usr/lib/vmware/lib/libvmwarebase.so.0/ ]; then
-    cp -v ./backup/libvmwarebase.so.0 /usr/lib/vmware/lib/libvmwarebase.so.0/
-elif [ -d /usr/lib/vmware/lib/libvmwarebase.so/ ]; then
-    cp -v ./backup/libvmwarebase.so /usr/lib/vmware/lib/libvmwarebase.so/
+base_dir=/usr/lib/vmware
+backup_dir=./backup
+cp -v \
+  "$backup_dir/vmware-vmx" \
+  "$backup_dir/vmware-vmx-debug" \
+  "$backup_dir/vmware-vmx-stats" "$base_dir/bin"
+if [ -d "$base_dir/lib/libvmwarebase.so.0/" ]; then
+    cp -v "$backup_dir/libvmwarebase.so.0" "$base_dir/lib/libvmwarebase.so.0/"
+elif [ -d "$base_dir/lib/libvmwarebase.so/" ]; then
+    cp -v "$backup_dir/libvmwarebase.so" "$base_dir/lib/libvmwarebase.so/"
 fi
 
 echo Removing backup files...
-rm -rf ./backup
-rm -rf ./tools
-rm -f /usr/lib/vmware/isoimages/darwin*.*
+rm -rf "$backup_dir" ./tools /usr/lib/vmware/isoimages/darwin*.*
 
 echo Finished!
