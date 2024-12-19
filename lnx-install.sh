@@ -32,9 +32,6 @@ fi
 echo Patching...
 python3 ./unlocker.py
 
-echo Getting VMware Tools...
-python3 ./gettools.py
-cp ./tools/darwin*.* /usr/lib/vmware/isoimages/
+echo "you can run ./lnx-update-tools.sh to download wmvare tools"
 
 echo Finished!
-
